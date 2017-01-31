@@ -34,14 +34,14 @@ public class Simulator {
         public boolean add(Page page) {
             if(this.size()==DRAM_SIZE) {
                 migToPcm++;
-                pcm.add(dram.get(0));
-                dram.remove(0);
-                dram.add(page);
-                return false;
+                pcm.add(0,dram.get(0));
+                dram.remove(dram.size()-1);
+                dram.add(0,page);
+                return true;
             }
-            boolean ret= super.add(page);
-            Collections.sort(this);
-            return ret;
+            else
+                add(0,page);
+            return true;
         }
     };
 
@@ -49,13 +49,14 @@ public class Simulator {
         @Override
         public boolean add(Page page) {
             if(this.size()==PCM_SIZE) {
-                pcm.remove(0);
-                pcm.add(page);
+                pcm.remove(pcm.size()-1);
+                pcm.add(0,page);
                 return false;
             }
-            boolean ret= super.add(page);
+            else
+                pcm.add(0,page);
          //  Collections.sort(this);
-            return ret;
+            return true;
         }
     };
 
@@ -83,18 +84,28 @@ public class Simulator {
             if(pcmIndex != -1)
             {
                 pcm.get(pcmIndex).setAccessNum(pcm.get(pcmIndex).getAccessNum()+1);
-                Page pcm2=pcm.get(pcmIndex);
-                if(pcm.get(pcmIndex).getAccessNum() >= PCM_THRESHOLD) {
+                Page toBeginning=new Page(pcm.get(pcmIndex).getAddress());
+                toBeginning.setAccessNum(pcm.get(pcmIndex).getAccessNum());
+                pcm.remove(pcmIndex);
+                pcm.add(toBeginning);
+                if(pcm.get(0).getAccessNum() >= PCM_THRESHOLD) {
                     migToDram++;
-                    Page p=new Page(pcm.get(pcmIndex).getAddress());
-                    p.setAccessNum(pcm.get(pcmIndex).getAccessNum());
-                    pcm.remove(pcmIndex);
+                    Page p=new Page(pcm.get(0).getAddress());
+                //    p.setAccessNum(pcm.get(pcmIndex).getAccessNum());
+                    pcm.remove(0);
                     dram.add(p);
                 }
 
             }
             else{
-                dram.add(newPage);
+                if(dram.size()==DRAM_SIZE) {
+                    if (pcm.size() == PCM_SIZE) {
+                        pcm.remove(pcm.size()-1);
+                    }
+                    pcm.add(pcm.size(), newPage);
+                }
+                else
+                    dram.add(newPage);
             }
         }
         return 0;
