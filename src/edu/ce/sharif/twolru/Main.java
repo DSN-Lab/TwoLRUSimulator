@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -15,10 +16,11 @@ public class Main {
 
     public static void main(String[] args) throws FileNotFoundException {
         long num = 0;
-        Simulator simulator = new Simulator(10L, 900000000L, 1000L);
-        File traceFile = new File("/home/mohammad/simforkhorooji_fixed.o83020");
+        Simulator simulator = new Simulator(10L, 900000L, 100L);
+        File traceFile = new File("C:\\Users\\Farzin\\Desktop\\trace.txt");
         Scanner scanner = new Scanner(traceFile);
         String splitPattern=Pattern.quote("#");
+        Date start = new Date();
         while(scanner.hasNext())
         {
             num++;
@@ -27,13 +29,15 @@ public class Main {
 
             Page p = new Page(new BigInteger(splitted[0]));
             simulator.add(p);
-            if(num % 1000000 == 0) {
-                double prec = (double) num / 331000000;
+            if(num % 50000 == 0) {
+                double prec = (double) num / 500000;
                 prec = prec * 100;
                 System.out.println(prec);
             }
 
         }
+        Date end = new Date();
+        System.out.println((end.getTime()-start.getTime())/1000);
         simulator.printStatistics();
     }
 
