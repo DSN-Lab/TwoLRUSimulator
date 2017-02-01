@@ -29,7 +29,7 @@ public class Simulator {
         this.PCM_THRESHOLD = pcmThreshold;
     }
 
-    private List<Page> dram = new ArrayList<Page>(){
+    private List<Page> dram = new LinkedList<Page>(){
         @Override
         public boolean add(Page page) {
             if(this.size()==DRAM_SIZE) {
@@ -45,7 +45,7 @@ public class Simulator {
         }
     };
 
-    private List<Page> pcm = new ArrayList<Page>(){
+    private List<Page> pcm = new LinkedList<Page>(){
         @Override
         public boolean add(Page page) {
             if(this.size()==PCM_SIZE) {
